@@ -9,26 +9,109 @@ body {
     background-color: #f0f2f5;
     min-height: 100vh;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    justify-content: space-between;
     align-items: center;
     overflow: hidden;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
 .container {
     width: 100%;
     max-width: 800px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
     padding: 20px;
     text-align: center;
+    box-sizing: border-box;
 }
 
 .screen {
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 80vh;
+    padding: 20px 0;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Message Display */
+.message-display {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
     padding: 20px;
-    transition: opacity 0.5s ease;
+    box-sizing: border-box;
+}
+
+.message-content {
+    max-width: 100%;
+    text-align: center;
+}
+
+.gif-container {
+    width: 100%;
+    max-width: 300px;
+    height: 200px;
+    margin: 0 auto 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+/* Two Thumb Button */
+.two-thumb-button {
+    position: relative;
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    color: white;
+    border: none;
+    padding: 25px 40px;
+    font-size: 1.2em;
+    border-radius: 50px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 25px rgba(106, 17, 203, 0.3);
+    transition: all 0.3s ease;
+    margin: 40px 0;
+    width: 90%;
+    max-width: 400px;
+    min-height: 80px;
+}
+
+.two-thumb-button:active {
+    transform: scale(0.95);
+    box-shadow: 0 5px 15px rgba(106, 17, 203, 0.2);
+}
+
+.thumb {
+    font-size: 1.8em;
+    margin: 0 15px;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.two-thumb-button:active .thumb {
+    transform: translateY(5px);
+}
+
+.button-text {
+    margin: 0 15px;
+    font-weight: 500;
 }
 
 .hidden {

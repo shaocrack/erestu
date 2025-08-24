@@ -7,6 +7,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const progressBar = document.getElementById('progress-bar');
     const loadingText = document.getElementById('loading-text');
     const spaceMessage = document.getElementById('space-message');
+    const gifContainer = document.getElementById('gif-container');
+    const twoThumbButton = document.getElementById('two-thumb-button');
+    const leftThumb = document.querySelector('.left-thumb');
+    const rightThumb = document.querySelector('.right-thumb');
+    
+    // GIFs for different states
+    const gifs = {
+        initial: 'https://media.giphy.com/media/3o7btPCcdkNj7g0R5e/giphy.gif',
+        pressing: 'https://media.giphy.com/media/3o7aD2d7hy9ktXNDP2/giphy.gif',
+        success: 'https://media.giphy.com/media/3o7TKsQ8U4X0gX8k7i/giphy.gif',
+        space: 'https://media.giphy.com/media/3o7aD5z5X6X6X6X6X6/giphy.gif'
+    };
     
     // State
     let attempt = 0;
@@ -15,9 +27,21 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Messages for each attempt
     const attemptMessages = [
-        { progress: 80, message: '¡Presiona un poco más fuerte!' },
-        { progress: 70, message: '¡Más fuerte por favor!' },
-        { progress: 100, message: '¡Así de insistente hay que ser con los metas! ¡Llegar al 100%!' }
+        { 
+            progress: 80, 
+            message: '¡Presiona un poco más fuerte!',
+            retry: '¡Vuelve a levantar los pulgares e inténtalo de nuevo con más fuerza! 💪'
+        },
+        { 
+            progress: 70, 
+            message: '¡Más fuerte por favor!',
+            retry: '¡No te rindas! Levanta los pulgares y vuelve a intentarlo con más energía! 💪'
+        },
+        { 
+            progress: 100, 
+            message: '¡Así de insistente hay que ser con los metas! ¡Llegar al 100%!',
+            retry: '¡Casi lo logras! Levanta los pulgares y dale con todo esta vez. ¡Tú puedes! 💪'
+        }
     ];
     
     // Space messages
@@ -44,13 +68,22 @@ document.addEventListener('DOMContentLoaded', () => {
     init();
     
     function init() {
-        // Add event listeners
-        startScreen.addEventListener('mousedown', handlePressStart);
-        startScreen.addEventListener('touchstart', handlePressStart);
+        // Set initial GIF
+        setGif('initial');
         
-        startScreen.addEventListener('mouseup', handlePressEnd);
-        startScreen.addEventListener('touchend', handlePressEnd);
-        startScreen.addEventListener('mouseleave', handlePressEnd);
+        // Add event listeners for the two-thumb button
+        twoThumbButton.addEventListener('mousedown', handlePressStart);
+        twoThumbButton.addEventListener('touchstart', handlePressStart, { passive: true });
+        
+        twoThumbButton.addEventListener('mouseup', handlePressEnd);
+        twoThumbButton.addEventListener('touchend', handlePressEnd);
+        twoThumbButton.addEventListener('mouseleave', handlePressEnd);
+    }
+    
+    function setGif(state) {
+        if (gifs[state]) {
+            gifContainer.innerHTML = `<img src="${gifs[state]}" alt="${state}" style="max-width:100%; max-height:100%;">`;
+        }
     }
     
     function handlePressStart(e) {
@@ -58,6 +91,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isPressing) return;
         
         isPressing = true;
+        setGif('pressing');
+        
+        // Animate thumbs
+        leftThumb.style.transform = 'translateY(5px)';
+        rightThumb.style.transform = 'translateY(5px)';
+        
         startLoading();
     }
     
@@ -68,17 +107,32 @@ document.addEventListener('DOMContentLoaded', () => {
         isPressing = false;
         clearInterval(pressTimer);
         
+        // Reset thumb positions
+        leftThumb.style.transform = 'translateY(0)';
+        rightThumb.style.transform = 'translateY(0)';
+        
         // If not at the final attempt, show retry message
         if (attempt < attemptMessages.length - 1) {
-            loadingText.textContent = 'Intentémoslo otra vez...';
+            // Show initial retry message
+            loadingText.textContent = '¡Ups! No fue suficiente. ' + attemptMessages[attempt].retry;
+            setGif('initial');
+            
+            // After a delay, show the press again instruction
+            setTimeout(() => {
+                if (!isPressing) { // Only if user hasn't started pressing again
+                    loadingText.textContent = 'Presiona de nuevo con los dos pulgares 👇👇';
+                }
+            }, 1000);
+            
+            // Reset after a longer delay
             setTimeout(() => {
                 resetLoading();
-            }, 1500);
+            }, 3000);
         }
     }
     
     function startLoading() {
-        // Show loading screen
+        // Show loading screen and hide start screen
         startScreen.classList.add('hidden');
         loadingScreen.classList.remove('hidden');
         
@@ -90,6 +144,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // Update progress container with initial value
         progressContainer.setAttribute('data-progress', '0');
         
+        // Show loading message
+        loadingText.textContent = 'Cargando...';
+        setGif('pressing');
+        
         pressTimer = setInterval(() => {
             progress += speed;
             
@@ -98,7 +156,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 progress = targetProgress;
                 clearInterval(pressTimer);
                 
-                // Show message for this attempt
+                // Show success GIF and message for this attempt
+                setGif('success');
                 loadingText.textContent = attemptMessages[attempt].message;
                 
                 // If this is the final attempt, proceed to space animation
@@ -129,7 +188,12 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector('.progress-container').setAttribute('data-progress', '0');
         
         // Reset loading text with a nice message
-        loadingText.textContent = '¡Vamos! Presiona y mantén con los dos pulgares';
+        loadingText.textContent = '¡Vamos! Presiona y mantén con los dos pulgares 👇👇';
+        setGif('initial');
+        
+        // Ensure thumbs are in the up position
+        leftThumb.style.transform = 'translateY(0)';
+        rightThumb.style.transform = 'translateY(0)';
         
         // Show start screen again with a nice transition
         loadingScreen.classList.add('hidden');

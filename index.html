@@ -8,16 +8,30 @@
 </head>
 <body>
     <div class="container">
-        <div id="start-screen" class="screen">
-            <h1>Presiona aquí con los 2 pulgares</h1>
-            <div class="hand-emoji">👆👆</div>
+        <!-- Message Display Area -->
+        <div id="message-display" class="message-display">
+            <div class="message-content">
+                <div id="gif-container" class="gif-container">
+                    <!-- GIFs will be inserted here by JavaScript -->
+                </div>
+                <p id="loading-text">Presiona el botón con los dos pulgares</p>
+            </div>
         </div>
-        
+
+        <!-- Progress Bar -->
         <div id="loading-screen" class="screen hidden">
             <div class="progress-container">
                 <div class="progress-bar" id="progress-bar"></div>
             </div>
-            <p id="loading-text">Cargando...</p>
+        </div>
+
+        <!-- Two Thumb Button -->
+        <div id="start-screen" class="screen">
+            <button id="two-thumb-button" class="two-thumb-button">
+                <span class="thumb left-thumb">👆</span>
+                <span class="thumb right-thumb">👆</span>
+                <span class="button-text">Presiona con los dos pulgares</span>
+            </button>
         </div>
         
         <div id="space-screen" class="screen hidden">
