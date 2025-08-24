@@ -85,6 +85,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const targetProgress = attemptMessages[attempt].progress;
         let progress = 0;
         const speed = 1 + (attempt * 0.2); // Increase speed with each attempt
+        const progressContainer = document.querySelector('.progress-container');
+        
+        // Update progress container with initial value
+        progressContainer.setAttribute('data-progress', '0');
         
         pressTimer = setInterval(() => {
             progress += speed;
@@ -103,23 +107,49 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
             
-            // Update progress bar
+            // Update progress bar and percentage
+            const roundedProgress = Math.min(Math.round(progress), 100);
             progressBar.style.width = `${progress}%`;
+            progressContainer.setAttribute('data-progress', roundedProgress);
+            
+            // Add pulse effect when reaching certain percentages
+            if (progress % 25 < speed) {
+                progressBar.style.animation = 'none';
+                void progressBar.offsetWidth; // Trigger reflow
+                progressBar.style.animation = 'pulse 0.5s ease';
+            }
             
         }, 20);
     }
     
     function resetLoading() {
-        // Reset progress bar
+        // Reset progress bar with animation
+        progressBar.style.transition = 'width 0.5s ease';
         progressBar.style.width = '0%';
-        loadingText.textContent = 'Presiona aquí con los 2 pulgares';
+        document.querySelector('.progress-container').setAttribute('data-progress', '0');
         
-        // Show start screen again
+        // Reset loading text with a nice message
+        loadingText.textContent = '¡Vamos! Presiona y mantén con los dos pulgares';
+        
+        // Show start screen again with a nice transition
         loadingScreen.classList.add('hidden');
-        startScreen.classList.remove('hidden');
+        setTimeout(() => {
+            startScreen.classList.remove('hidden');
+            startScreen.style.animation = 'fadeIn 0.5s ease';
+            
+            // Reset animation for next use
+            setTimeout(() => {
+                startScreen.style.animation = '';
+            }, 500);
+        }, 300);
         
         // Increment attempt counter
         attempt++;
+        
+        // Reset progress bar transition
+        setTimeout(() => {
+            progressBar.style.transition = 'width 0.5s cubic-bezier(0.25, 0.8, 0.25, 1)';
+        }, 500);
     }
     
     function showSpaceAnimation() {
